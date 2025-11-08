@@ -5,7 +5,6 @@ from pathlib import Path
 from urllib import request
 from typing import Any, Dict, Union
 import os
-import mlx.core as mx
 
 def download_and_save(save_dir: Union[str, Path] = os.getenv("SAVE_DIR", "data"), 
                       base_url: str = os.getenv("BASE_URL", "")) -> None:
@@ -46,24 +45,3 @@ def load_json(dataset: str,
         return json.load(fid)
 
 __all__ = ["download_and_save", "load_json"]
-
-
-# Pad sequences to the same length
-def pad_sequences(sequences, pad_token_id):
-    if not sequences:
-        return mx.array([])
-
-    # Find hte maximum length
-    max_len = max(len(seq) for seq in sequences)
-    padded_sequences = []
-
-    for seq in sequences:
-        if len(seq) < max_len:
-            padding = mx.array([pad_token_id] * (max_len - len(seq)))
-            padded_seq = mx.concatenate([seq, padding])
-
-        else:
-            padded_seq = seq
-        padded_sequences.append(padded_seq)
-
-    return mx.stack(padded_sequences)

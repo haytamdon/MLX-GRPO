@@ -4,7 +4,7 @@ import tqdm
 import numpy as np
 from mlx_lm import generate
 import mlx.core as mx
-from utils.utils import pad_sequences
+from utils.data_processing import pad_sequences
 
 def grpo_train_loop(
     model, model_old, model_ref, tokenizer, optimizer, train_set, 
