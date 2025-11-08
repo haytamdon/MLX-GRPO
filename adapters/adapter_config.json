@@ -1,8 +1,8 @@
 {
     "num_layers": 8,
     "lora_parameters": {
-        "rank": 8,
+        "rank": 4,
         "scale": 10.0,
-        "dropout": 0.0
+        "dropout": 0.3
     }
 }

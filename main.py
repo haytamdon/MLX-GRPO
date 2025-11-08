@@ -1,11 +1,13 @@
 import os
 from dotenv import load_dotenv
 from utils.download_data import load_json
+from utils.plotting import plot_metrics
+from trainers.mlx_trainer import grpo_train_loop
+from evaluate.evaluate import evaluate
 import numpy as np
 from mlx.utils import tree_flatten
 from mlx_lm import load
 from mlx_lm.tuner import linear_to_lora_layers
-from trainers.mlx_trainer import grpo_train_loop
 import os
 from pathlib import Path
 import time
@@ -15,7 +17,7 @@ import mlx.optimizers as optim
 load_dotenv()
 
 save_dir = os.environ["DATA_SAVE_DIR"]
-np.random.seed(os.environ["RANDOM_SEED"])
+np.random.seed(int(os.environ["RANDOM_SEED"]))
 adapter_path = Path(os.environ["ADAPTERS_DIR"])
 config_path = Path(os.environ["CONFIGS_DIR"])
 model_path = os.environ["MODEL_PATH"]
@@ -72,7 +74,7 @@ if __name__ == "__main__":
     model.train()
 
     # Make the optimizer:
-    opt = optim.Adam(learning_rate=grpo_config["learning_rate"])
+    opt = optim.Adam(learning_rate=float(grpo_config["learning_rate"]))
 
     print("Starting GRPO training...")
     start_time = time.time()
@@ -85,14 +87,25 @@ if __name__ == "__main__":
         tokenizer = tokenizer,
         optimizer = opt,
         train_set = train_set,
-        iters = grpo_config["iters"],
-        group_size = grpo_config["group_size"],
-        batch_size = grpo_config["batch_size"],
-        epsilon = grpo_config["epsilon"],
-        beta = grpo_config["beta"],
-        update_every = grpo_config["update_every"],
-        max_ans_len = grpo_config["max_ans_len"]
+        iters = int(grpo_config["iters"]),
+        group_size = int(grpo_config["group_size"]),
+        batch_size = int(grpo_config["batch_size"]),
+        epsilon = int(grpo_config["epsilon"]),
+        beta = float(grpo_config["beta"]),
+        update_every = int(grpo_config["update_every"]),
+        max_ans_len = int(grpo_config["max_ans_len"]),
+        adapter_path = adapter_path
     )
 
     end_time = time.time()
     print(f"Training finished in {end_time - start_time:.2f}s")
+    plot_metrics(losses, rewards)
+    test_set_eval = [(t["instruction"], *t["output"].rsplit(" ", maxsplit=1)) for t in test_set]
+
+    # Put model in eval mode for evaluation
+    model.eval()
+
+    # Increase this number to use more test examples
+    num_test = 100
+    test_acc = evaluate(model, tokenizer, num_test, test_set_eval)
+    print(f"Approximate test accuracy {test_acc:.3f}")
