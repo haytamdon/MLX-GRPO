@@ -6,8 +6,7 @@ from urllib import request
 from typing import Any, Dict, Union
 import os
 
-def download_and_save(save_dir: Union[str, Path] = os.getenv("SAVE_DIR", "data"), 
-                      base_url: str = os.getenv("BASE_URL", "")) -> None:
+def download_and_save(save_dir: Union[str, Path] = os.getenv("SAVE_DIR", "data")) -> None:
     """
     Download ``train.json`` and ``test.json`` from ``base_url`` into ``save_dir``.
     The directory is created if it does not exist. Files are only downloaded
@@ -17,17 +16,16 @@ def download_and_save(save_dir: Union[str, Path] = os.getenv("SAVE_DIR", "data")
         save_dir: Destination directory path.
         base_url: Base URL.
     """
-    save_path = Path(save_dir)
-    save_path.mkdir(parents=True, exist_ok=True)
-
-    for name in ("train.json", "test.json"):
-        target = save_path / name
-        if not target.exists():
-            request.urlretrieve(f"{base_url}{name}", target)
+    base_url = "https://raw.githubusercontent.com/AGI-Edgerunners/LLM-Adapters/main/dataset/hellaswag/"
+    save_dir = Path(save_dir)
+    save_dir.mkdir(parents=True, exist_ok=True)
+    for name in ["train.json", "test.json"]:
+        out_file = save_dir / name
+        if not out_file.exists():
+            request.urlretrieve(base_url + name, out_file)
 
 def load_json(dataset: str, 
-              save_dir: Union[str, Path], 
-              base_url: str) -> Dict[str, Any]:
+              save_dir: Union[str, Path] = os.getenv("SAVE_DIR", "data")) -> Dict[str, Any]:
     """
     Ensure the dataset JSON file is present locally and load it.
 
@@ -39,7 +37,7 @@ def load_json(dataset: str,
     Returns:
         Parsed JSON content as a dictionary.
     """
-    download_and_save(save_dir, base_url)
+    download_and_save(save_dir)
     file_path = Path(save_dir) / f"{dataset}.json"
     with file_path.open("r", encoding="utf-8") as fid:
         return json.load(fid)
