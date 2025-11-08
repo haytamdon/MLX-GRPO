@@ -425,6 +425,7 @@ dependencies = [
     { name = "mlx-lm" },
     { name = "numpy" },
     { name = "python-dotenv" },
+    { name = "pyyaml" },
 ]
 
 [package.metadata]
@@ -433,6 +434,7 @@ requires-dist = [
     { name = "mlx-lm", specifier = ">=0.28.3" },
     { name = "numpy", specifier = ">=2.3.4" },
     { name = "python-dotenv", specifier = ">=1.2.1" },
+    { name = "pyyaml", specifier = ">=6.0.3" },
 ]
 
 [[package]]
