@@ -1,0 +1,8 @@
+learning_rate: 1e-5
+iters: 200
+group_size: 4        # G in the paper, number of responses per prompt
+batch_size: 4        # Number of prompts per iteration
+epsilon: 0.2         # PPO clip parameter
+beta: 0.02           # KL penalty coefficient
+update_every: 10     # Sync model_old every N iterations
+max_ans_len: 4       # Max tokens to generate for an answer

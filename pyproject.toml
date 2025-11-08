@@ -4,4 +4,12 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "matplotlib>=3.10.7",
+    "mlx-lm>=0.28.3",
+    "notebook>=7.4.7",
+    "numpy>=2.3.4",
+    "python-dotenv>=1.2.1",
+    "pyyaml>=6.0.3",
+    "tqdm>=4.67.1",
+]
